@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/tv_success"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="恭喜您，任务已完成！"
+        android:layout_margin="20dp"
+        android:padding="10dp"
+        android:background="@drawable/shape_border"
+        />
+
+
+    <TextView
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:id="@+id/tv_info"
+        android:background="@drawable/shape_border"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="你的任务码为："
+        />
+
+
+    <Button
+        android:layout_margin="20dp"
+        android:id="@+id/btn_copy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="点击复制任务码" />
+
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/tv_deny"
+        android:layout_marginTop="80dp"
+        android:background="@drawable/shape_border"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+       android:text="抱歉，你拒绝了相关授权！" />
+
+
+    <Button
+        android:visibility="gone"
+        android:layout_margin="20dp"
+        android:id="@+id/btn_submit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="点击完成" />
+
+    <TextView
+        android:visibility="gone"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:id="@+id/tv_deviceId"
+        android:background="@drawable/shape_border"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="deviceId："
+        />
+
+    <EditText
+        android:paddingTop="10dp"
+        android:visibility="gone"
+        android:paddingBottom="10dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:id="@+id/tv_hardware"
+        android:background="@drawable/shape_border"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="获取到的信息："
+        />
+
+</LinearLayout>
