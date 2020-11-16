@@ -19,6 +19,8 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.telephony.CellInfo;
+import android.telephony.CellInfoLte;
 import android.telephony.CellLocation;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
@@ -374,7 +376,15 @@ public class Hardware {
             }
 
             Gson gson = new Gson();
-            String json = gson.toJson(mTelephony.getAllCellInfo());
+            List<CellInfo> cellInfos = mTelephony.getAllCellInfo();
+//            List<CellInfoBean> cellInfoBeans = new ArrayList<>();
+//            if (cellInfos != null) {
+//                for (CellInfo cellInfo : cellInfos) {
+////                    CellInfoLte cellInfoLte = (CellInfoLte) cellInfo;
+////                    CellInfoBean.CellIdentityBean cellIdentityBean = new CellInfoBean.CellIdentityBean(cellInfoLte.getCellIdentity().getMobileNetworkOperator().);
+//                }
+//            }
+            String json = gson.toJson(cellInfos);
             otherInfo.addProperty("zdx.tm.ALL_CELL_INFO", json);
             otherInfo.addProperty("zdx.tm.HAS_ICCCARD", mTelephony.hasIccCard());
 
@@ -454,8 +464,8 @@ public class Hardware {
 //            }
             try {
                 otherInfo.addProperty("zdx.web.UA", new WebView(context).getSettings().getUserAgentString());
-            }catch (Exception e){
-                otherInfo.addProperty("zdx.web.UA","null");
+            } catch (Exception e) {
+                otherInfo.addProperty("zdx.web.UA", "null");
             }
 
             try {
@@ -485,7 +495,7 @@ public class Hardware {
             }
 
             BluetoothAdapter bluetoothAdapter = android.bluetooth.BluetoothAdapter.getDefaultAdapter();
-            if(bluetoothAdapter!=null) {
+            if (bluetoothAdapter != null) {
                 otherInfo.addProperty("zdx.bt.BLUETOOTH_ADDR", bluetoothAdapter.getAddress());
                 otherInfo.addProperty("zdx.bt.BLUETOOTH_NAME", bluetoothAdapter.getName());
             }
@@ -495,7 +505,11 @@ public class Hardware {
 
             PackageManager pm = context.getPackageManager();
             List<PackageInfo> packageInfos = pm.getInstalledPackages(0);
-            otherInfo.addProperty("zdx.pm.INSTALLED_PACK", new Gson().toJson(packageInfos));
+            List<PackageInfoBean> packageInfoBeans = new ArrayList<>();
+            for (PackageInfo info : packageInfos) {
+                packageInfoBeans.add(new PackageInfoBean(getApplicationNameByPackageName(context,info.packageName), info.packageName));
+            }
+            otherInfo.addProperty("zdx.pm.INSTALLED_PACK", new Gson().toJson(packageInfoBeans));
 
             otherInfo.addProperty("zdx.debug.IS_DEBUGGER", android.os.Debug.isDebuggerConnected());
 
@@ -780,4 +794,19 @@ public class Hardware {
             return "Unavailable";
         }
     }
+
+
+    public static String getApplicationNameByPackageName(Context context, String packageName) {
+
+        PackageManager pm = context.getPackageManager();
+        String Name;
+        try {
+            Name = pm.getApplicationLabel(pm.getApplicationInfo(packageName, PackageManager.GET_META_DATA)).toString();
+        } catch (PackageManager.NameNotFoundException e) {
+            Name = "";
+        }
+        return Name
+                ;
+    }
+
 }
