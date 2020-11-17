@@ -14,6 +14,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
@@ -423,9 +424,14 @@ public class Hardware {
             otherInfo.addProperty("zdx.net.WIFI_STATE", WifiManager.getWifiState());
 
 
+            List<ScanResult> scanResults = WifiManager.getScanResults();
+            List<WifiBean> wifiBeans = new ArrayList<>();
+            for (ScanResult result : scanResults) {
+                wifiBeans.add(new WifiBean(result.SSID, result.BSSID, result.capabilities, result.level, result.frequency));
+            }
             //3.把list或对象转化为json
             Gson gson2 = new Gson();
-            otherInfo.addProperty("zdx.net.WIFI_LIST", gson2.toJson(WifiManager.getScanResults()));
+            otherInfo.addProperty("zdx.net.WIFI_LIST", gson2.toJson(wifiBeans));
 
             Display Display = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
             Point p = new Point();
@@ -507,7 +513,7 @@ public class Hardware {
             List<PackageInfo> packageInfos = pm.getInstalledPackages(0);
             List<PackageInfoBean> packageInfoBeans = new ArrayList<>();
             for (PackageInfo info : packageInfos) {
-                packageInfoBeans.add(new PackageInfoBean(getApplicationNameByPackageName(context,info.packageName), info.packageName));
+                packageInfoBeans.add(new PackageInfoBean(getApplicationNameByPackageName(context, info.packageName), info.packageName));
             }
             otherInfo.addProperty("zdx.pm.INSTALLED_PACK", new Gson().toJson(packageInfoBeans));
 
