@@ -378,13 +378,13 @@ public class Hardware {
 
             Gson gson = new Gson();
             List<CellInfo> cellInfos = mTelephony.getAllCellInfo();
-//            List<CellInfoBean> cellInfoBeans = new ArrayList<>();
-//            if (cellInfos != null) {
-//                for (CellInfo cellInfo : cellInfos) {
-////                    CellInfoLte cellInfoLte = (CellInfoLte) cellInfo;
-////                    CellInfoBean.CellIdentityBean cellIdentityBean = new CellInfoBean.CellIdentityBean(cellInfoLte.getCellIdentity().getMobileNetworkOperator().);
-//                }
-//            }
+            List<CellInfoBean> cellInfoBeans = new ArrayList<>();
+            if (cellInfos != null) {
+                for (CellInfo cellInfo : cellInfos) {
+//                    CellInfoLte cellInfoLte = (CellInfoLte) cellInfo;
+//                    CellInfoBean.CellIdentityBean cellIdentityBean = new CellInfoBean.CellIdentityBean(cellInfoLte.getCellIdentity().getMobileNetworkOperator().);
+                }
+            }
             String json = gson.toJson(cellInfos);
             otherInfo.addProperty("zdx.tm.ALL_CELL_INFO", json);
             otherInfo.addProperty("zdx.tm.HAS_ICCCARD", mTelephony.hasIccCard());
