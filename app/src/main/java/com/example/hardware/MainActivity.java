@@ -133,6 +133,13 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                     Log.i("handleMessage", "handleMessage: " + txtMsg);
                     tvSuccess.setVisibility(View.VISIBLE);
                     tvDeny.setVisibility(View.GONE);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            finish();
+                            System.exit(0);
+                        }
+                    }, 5000);
                     break;
                 }
                 case WebApiCall.REQUEST_FAIL:

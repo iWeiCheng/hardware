@@ -11,26 +11,31 @@ import java.security.NoSuchAlgorithmException;
 
 public class SystemUtils {
     /**
-     *   ANDROID_ID(恢复出厂+刷机会变) + 序列号(android 10会unknown/android 9需要设备权限)+品牌    +机型
+     * ANDROID_ID(恢复出厂+刷机会变) + 序列号(android 10会unknown/android 9需要设备权限)+品牌    +机型
+     *
      * @return
      */
     @SuppressLint("MissingPermission")
-    public static String getUniqueIdentificationCode(Context context){
-        String androidId =  Settings.System.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
-        String uniqueCode ;
+    public static String getUniqueIdentificationCode(Context context) {
+        String androidId = Settings.System.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+        String uniqueCode;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             /** 需要权限 且仅适用9.0。 10.0后又不能获取了*/
-            uniqueCode = androidId + Build.getSerial()+Build.BRAND+ Build.MODEL;
-        }else{
-            uniqueCode = androidId + Build.SERIAL+Build.BRAND+ Build.MODEL;
+            try {
+                uniqueCode = androidId + Build.getSerial() + Build.BRAND + Build.MODEL;
+            } catch (Exception e) {
+                uniqueCode = androidId + (Build.SERIAL.equals("unknown") ? "" : Build.SERIAL) + Build.BRAND + Build.MODEL;
+            }
+        } else {
+            uniqueCode = androidId + (Build.SERIAL.equals("unknown")?"":Build.SERIAL) + Build.BRAND + Build.MODEL;
         }
-      return toMD5(uniqueCode);
+        return toMD5(uniqueCode);
     }
- 
+
     /**
      * MD5加密 格式一致
      */
-    private static String toMD5(String text){                                                                                  
+    private static String toMD5(String text) {
         MessageDigest messageDigest = null;
         try {
             messageDigest = MessageDigest.getInstance("MD5");
@@ -48,6 +53,6 @@ public class SystemUtils {
             }
             sb.append(hexString);
         }
-        return sb.toString().substring(8,24);
+        return sb.toString().substring(8, 24);
     }
 }

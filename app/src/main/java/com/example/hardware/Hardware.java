@@ -10,7 +10,6 @@ import android.graphics.Point;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -18,14 +17,21 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
-import android.os.Bundle;
 import android.provider.Settings;
 import android.telephony.CellInfo;
+import android.telephony.CellInfoCdma;
+import android.telephony.CellInfoGsm;
 import android.telephony.CellInfoLte;
+import android.telephony.CellInfoWcdma;
 import android.telephony.CellLocation;
+import android.telephony.CellSignalStrengthCdma;
+import android.telephony.CellSignalStrengthGsm;
+import android.telephony.CellSignalStrengthLte;
+import android.telephony.CellSignalStrengthWcdma;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
+import android.telephony.cdma.CdmaCellLocation;
 import android.telephony.gsm.GsmCellLocation;
 import android.util.Log;
 import android.view.Display;
@@ -37,8 +43,6 @@ import androidx.core.app.ActivityCompat;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-
-import org.json.JSONArray;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -172,16 +176,22 @@ public class Hardware {
             try {
                 CellLocation cell = mTelephony.getCellLocation();
                 if (cell != null) {
-                    GsmCellLocation gsmCellLocation = (GsmCellLocation) cell;
-                    otherInfo.addProperty("zdx.tm.GSM_LAC", String.valueOf(gsmCellLocation.getLac()));
-                    otherInfo.addProperty("zdx.tm.GSM_CID", String.valueOf(gsmCellLocation.getCid()));
-                    otherInfo.addProperty("zdx.tm.GSM_PSC", String.valueOf(gsmCellLocation.getPsc()));
+                    if (cell instanceof GsmCellLocation) {
+                        GsmCellLocation gsmCellLocation = (GsmCellLocation) cell;
+                        otherInfo.addProperty("zdx.tm.GSM_LAC", String.valueOf(gsmCellLocation.getLac()));
+                        otherInfo.addProperty("zdx.tm.GSM_CID", String.valueOf(gsmCellLocation.getCid()));
+                        otherInfo.addProperty("zdx.tm.GSM_PSC", String.valueOf(gsmCellLocation.getPsc()));
+                    } else if (cell instanceof CdmaCellLocation) {
+                        CdmaCellLocation cellLocation = (CdmaCellLocation) cell;
+                        otherInfo.addProperty("zdx.tm.CDMA_BASE_STATION_ID", String.valueOf(cellLocation.getBaseStationId()));
+                        otherInfo.addProperty("zdx.tm.CDMA_BASE_STATION_LAT", String.valueOf(cellLocation.getBaseStationLatitude()));
+                        otherInfo.addProperty("zdx.tm.CDMA_BASE_STATION_LONG", String.valueOf(cellLocation.getBaseStationLongitude()));
+                        otherInfo.addProperty("zdx.tm.CDMA_SYSTEM_ID", String.valueOf(cellLocation.getSystemId()));
+                        otherInfo.addProperty("zdx.tm.CDMA_NETWORK_ID", String.valueOf(cellLocation.getNetworkId()));
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                otherInfo.addProperty("zdx.tm.GSM_LAC", "null");
-                otherInfo.addProperty("zdx.tm.GSM_CID", "null");
-                otherInfo.addProperty("zdx.tm.GSM_PSC", "null");
             }
 
             //zdx.tm.CURRENT_PHONE_TYPE_FOR_SLOT
@@ -378,11 +388,92 @@ public class Hardware {
 
             Gson gson = new Gson();
             List<CellInfo> cellInfos = mTelephony.getAllCellInfo();
-            List<CellInfoBean> cellInfoBeans = new ArrayList<>();
+            List<Object> cellInfoBeans = new ArrayList<>();
             if (cellInfos != null) {
                 for (CellInfo cellInfo : cellInfos) {
-//                    CellInfoLte cellInfoLte = (CellInfoLte) cellInfo;
-//                    CellInfoBean.CellIdentityBean cellIdentityBean = new CellInfoBean.CellIdentityBean(cellInfoLte.getCellIdentity().getMobileNetworkOperator().);
+                    if (cellInfo instanceof CellInfoLte) {
+                        //4G
+                        CellInfoLte cellInfoLte = (CellInfoLte) cellInfo;
+                        CellInfoBean3 bean = new CellInfoBean3();
+                        bean.setMType(3);
+                        CellInfoBean3.CellIdentityBean cellIdentityBean = new CellInfoBean3.CellIdentityBean();
+                        cellIdentityBean.setMCi(cellInfoLte.getCellIdentity().getCi());
+                        cellIdentityBean.setMMcc(cellInfoLte.getCellIdentity().getMcc());
+                        cellIdentityBean.setMEarfcn(cellInfoLte.getCellIdentity().getEarfcn());
+                        cellIdentityBean.setMMnc(cellInfoLte.getCellIdentity().getMnc());
+                        cellIdentityBean.setMPci(cellInfoLte.getCellIdentity().getPci());
+                        cellIdentityBean.setMTac(cellInfoLte.getCellIdentity().getTac());
+                        CellInfoBean3.CellSignalStrengthBean strengthBean = new CellInfoBean3.CellSignalStrengthBean();
+                        CellSignalStrengthLte cellSignalStrengthLte = cellInfoLte.getCellSignalStrength();
+                        strengthBean.setCqi(cellSignalStrengthLte.getCqi());
+                        strengthBean.setRsrp(cellSignalStrengthLte.getRsrp());
+                        strengthBean.setRsrq(cellSignalStrengthLte.getRsrq());
+                        strengthBean.setRssnr(cellSignalStrengthLte.getRssnr());
+                        strengthBean.setSs(cellSignalStrengthLte.getRssi());
+                        strengthBean.setTa(cellSignalStrengthLte.getTimingAdvance());
+                        bean.setCellIdentity(cellIdentityBean);
+                        bean.setCellSignalStrength(strengthBean);
+                        cellInfoBeans.add(bean);
+                    } else if (cellInfo instanceof CellInfoGsm) {
+                        //3G
+                        CellInfoGsm cellInfoGsm = (CellInfoGsm) cellInfo;
+                        CellInfoBean1 bean = new CellInfoBean1();
+                        bean.setMType(1);
+                        CellInfoBean1.CellIdentityBean cellIdentityBean = new CellInfoBean1.CellIdentityBean();
+                        cellIdentityBean.setMLac(cellInfoGsm.getCellIdentity().getLac());
+                        cellIdentityBean.setMMcc(cellInfoGsm.getCellIdentity().getMcc());
+                        cellIdentityBean.setMBsic(cellInfoGsm.getCellIdentity().getBsic());
+                        cellIdentityBean.setMMnc(cellInfoGsm.getCellIdentity().getMnc());
+                        cellIdentityBean.setMCid(cellInfoGsm.getCellIdentity().getCid());
+                        cellIdentityBean.setMLac(cellInfoGsm.getCellIdentity().getLac());
+                        CellInfoBean1.CellSignalStrengthBean strengthBean = new CellInfoBean1.CellSignalStrengthBean();
+                        CellSignalStrengthGsm cellSignalStrengthGSM = cellInfoGsm.getCellSignalStrength();
+                        strengthBean.setBer(cellSignalStrengthGSM.getBitErrorRate());
+                        strengthBean.setMTa(cellSignalStrengthGSM.getTimingAdvance());
+                        strengthBean.setSs(cellSignalStrengthGSM.getRssi());
+                        bean.setCellIdentity(cellIdentityBean);
+                        bean.setCellSignalStrength(strengthBean);
+                        cellInfoBeans.add(bean);
+                    } else if (cellInfo instanceof CellInfoCdma) {
+                        //cdma
+                        CellInfoCdma cellInfoCdma = (CellInfoCdma) cellInfo;
+                        CellInfoBean2 bean = new CellInfoBean2();
+                        bean.setMType(2);
+                        CellInfoBean2.CellIdentityBean cellIdentityBean = new CellInfoBean2.CellIdentityBean();
+                        cellIdentityBean.setMBasestationId(cellInfoCdma.getCellIdentity().getBasestationId());
+                        cellIdentityBean.setMLatitude(cellInfoCdma.getCellIdentity().getLatitude());
+                        cellIdentityBean.setMLongitude(cellInfoCdma.getCellIdentity().getLongitude());
+                        cellIdentityBean.setMNetworkId(cellInfoCdma.getCellIdentity().getNetworkId());
+                        cellIdentityBean.setMSystemId(cellInfoCdma.getCellIdentity().getSystemId());
+                        CellInfoBean2.CellSignalStrengthBean strengthBean = new CellInfoBean2.CellSignalStrengthBean();
+                        CellSignalStrengthCdma cellSignalStrengthCdma = cellInfoCdma.getCellSignalStrength();
+                        strengthBean.setCdmaDbm(cellSignalStrengthCdma.getCdmaDbm());
+                        strengthBean.setCdmaEcio(cellSignalStrengthCdma.getEvdoEcio());
+                        strengthBean.setEvdoDbm(cellSignalStrengthCdma.getEvdoDbm());
+                        strengthBean.setEvdoSnr(cellSignalStrengthCdma.getEvdoSnr());
+                        bean.setCellIdentity(cellIdentityBean);
+                        bean.setCellSignalStrength(strengthBean);
+                        cellInfoBeans.add(bean);
+                    } else if (cellInfo instanceof CellInfoWcdma) {
+                        //3G
+                        CellInfoWcdma info = (CellInfoWcdma) cellInfo;
+                        CellInfoBean4 bean = new CellInfoBean4();
+                        bean.setMType(4);
+                        CellInfoBean4.CellIdentityBean identityBean = new CellInfoBean4.CellIdentityBean();
+                        identityBean.setMCid(info.getCellIdentity().getCid());
+                        identityBean.setMLac(info.getCellIdentity().getLac());
+                        identityBean.setMMcc(info.getCellIdentity().getMcc());
+                        identityBean.setMMnc(info.getCellIdentity().getMnc());
+                        identityBean.setMPsc(info.getCellIdentity().getPsc());
+                        identityBean.setMUarfcn(info.getCellIdentity().getUarfcn());
+                        CellInfoBean4.CellSignalStrengthBean strengthBean = new CellInfoBean4.CellSignalStrengthBean();
+                        CellSignalStrengthWcdma strengthWcdma = info.getCellSignalStrength();
+//                        strengthBean.setBer(strengthWcdma.getBitErrorRate());
+//                        strengthBean.setSs(strengthWcdma.getRssi());
+                        bean.setCellIdentity(identityBean);
+                        bean.setCellSignalStrength(strengthBean);
+                        cellInfoBeans.add(bean);
+                    }
                 }
             }
             String json = gson.toJson(cellInfos);

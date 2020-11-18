@@ -3,7 +3,7 @@ package com.example.hardware;
 /**
  * Created by danjj on 2020/11/16 0016.
  */
-public class CellInfoBean {
+public class CellInfoBean2 {
 
     /**
      * mType : 2
@@ -15,10 +15,13 @@ public class CellInfoBean {
     private CellIdentityBean CellIdentity;
     private CellSignalStrengthBean CellSignalStrength;
 
-    public CellInfoBean(int mType, CellIdentityBean cellIdentity, CellSignalStrengthBean cellSignalStrength) {
+    public CellInfoBean2(int mType, CellIdentityBean cellIdentity, CellSignalStrengthBean cellSignalStrength) {
         this.mType = mType;
         CellIdentity = cellIdentity;
         CellSignalStrength = cellSignalStrength;
+    }
+
+    public CellInfoBean2() {
     }
 
     public int getMType() {
@@ -52,6 +55,9 @@ public class CellInfoBean {
             this.mBasestationId = mBasestationId;
             this.mLongitude = mLongitude;
             this.mLatitude = mLatitude;
+        }
+
+        public CellIdentityBean() {
         }
 
         /**
@@ -116,6 +122,9 @@ public class CellInfoBean {
             this.evdoDbm = evdoDbm;
             this.evdoEcio = evdoEcio;
             this.evdoSnr = evdoSnr;
+        }
+
+        public CellSignalStrengthBean() {
         }
 
         /**
