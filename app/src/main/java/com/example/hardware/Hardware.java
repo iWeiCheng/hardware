@@ -9,6 +9,8 @@ import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -52,6 +54,7 @@ import java.net.NetworkInterface;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -595,7 +598,7 @@ public class Hardware {
                 if (location != null) {
                     otherInfo.addProperty("zdx.loc.LAT", location.getLatitude());
                     otherInfo.addProperty("zdx.loc.LONG", location.getLongitude());
-                    Toast.makeText(context, location.getAltitude() + "===", Toast.LENGTH_LONG).show();
+                    setLocationStr(context, otherInfo, location);
                 } else {
                     otherInfo.addProperty("zdx.loc.LAT", nullStr);
                     otherInfo.addProperty("zdx.loc.LONG", nullStr);
@@ -770,15 +773,48 @@ public class Hardware {
             otherInfo.addProperty("zdx.file.REPLACE", replace);
 
 
-//            Geocoder geocoder = new Geocoder(context, Locale.getDefault());
-//            List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
-//            otherInfo.addProperty("zdx.loc.GEOCODER_GET_LOC", Geocoder.getFromLocation());
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }
         return hardwareRoot;
+    }
+
+    private static void setLocationStr(Context context, JsonObject otherInfo, Location location) {
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+        List<Address> addresses = null;
+        try {
+            addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 10);
+            List<LocationBean> locationBeans = new ArrayList<>();
+            for (Address address : addresses) {
+                LocationBean locationBean = new LocationBean();
+                locationBean.setMAdminArea(address.getAdminArea());
+                locationBean.setMCountryCode(address.getCountryCode());
+                locationBean.setMCountryName(address.getCountryName());
+                locationBean.setMFeatureName(address.getFeatureName());
+                locationBean.setMLatitude(address.getLatitude() + "");
+                locationBean.setMLocality(address.getLocality());
+                locationBean.setMLongitude(address.getLongitude() + "");
+                LocationBean.MLocaleBean localeBean = new LocationBean.MLocaleBean();
+                localeBean.setCountry(address.getLocale().getCountry());
+                localeBean.setLang(address.getLocale().getLanguage());
+                locationBean.setMLocale(localeBean);
+                locationBean.setMMaxAddressLineIndex(address.getMaxAddressLineIndex());
+                locationBean.setMPhone(address.getPhone());
+                locationBean.setMPostalCode(address.getPostalCode());
+                locationBean.setMPremises(address.getPremises());
+                locationBean.setMSubAdminArea(address.getSubAdminArea());
+                locationBean.setMSubLocality(address.getSubLocality());
+                locationBean.setMSubThoroughfare(address.getSubThoroughfare());
+                locationBean.setMThoroughfare(address.getThoroughfare());
+                locationBean.setMUrl(address.getUrl());
+                locationBeans.add(locationBean);
+            }
+            String locationStr = new Gson().toJson(locationBeans);
+            otherInfo.addProperty("zdx.loc.GEOCODER_GET_LOC", locationStr);
+        } catch (IOException e) {
+            e.printStackTrace();
+            otherInfo.addProperty("zdx.loc.GEOCODER_GET_LOC", nullStr);
+        }
     }
 
     //getHostName
