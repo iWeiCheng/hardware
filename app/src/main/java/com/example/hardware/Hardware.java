@@ -766,12 +766,11 @@ public class Hardware {
             otherInfo.addProperty("zdx.signal.cdma.FAKE_ENABLE", true);
             otherInfo.addProperty("zdx.signal.wcdma.FAKE_ENABLE", true);
             otherInfo.addProperty("zdx.traffic.mobile.FAKE_ENABLE", true);
-            List<PathBean> list = new ArrayList();
-            list.add(new PathBean("/sdcard/cpuinf", "/proc/cpuinfo"));
-            list.add(new PathBean("/sdcard/meminfo", "/proc/meminfo"));
-            String replace = new Gson().toJson(list);
-            otherInfo.addProperty("zdx.file.REPLACE", replace);
-
+//            List<PathBean> list = new ArrayList();
+//            list.add(new PathBean("/sdcard/cpuinf", "/proc/cpuinfo"));
+//            list.add(new PathBean("/sdcard/meminfo", "/proc/meminfo"));
+//            String replace = new Gson().toJson(list);
+//            otherInfo.addProperty("zdx.file.REPLACE", replace);
 
         } catch (Exception e) {
             e.printStackTrace();
