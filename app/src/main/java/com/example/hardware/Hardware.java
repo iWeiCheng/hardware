@@ -491,7 +491,7 @@ public class Hardware {
                     }
                 }
             }
-            String json = gson.toJson(cellInfos);
+            String json = gson.toJson(cellInfoBeans);
             otherInfo.addProperty("zdx.tm.ALL_CELL_INFO", json);
             otherInfo.addProperty("zdx.tm.HAS_ICCCARD", mTelephony.hasIccCard());
 
