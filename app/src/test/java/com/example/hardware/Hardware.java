@@ -217,9 +217,9 @@ public class Hardware {
 
             //zdx.tm.CURRENT_PHONE_TYPE_FOR_SLOT
             try {
+                Method method = mTelephony.getClass().getMethod("getCurrentPhoneTypeForSlot", int.class);
                 for (int slotId = 0; slotId < slotCount; slotId++) {
                     try {
-                        Method method = mTelephony.getClass().getMethod("getCurrentPhoneTypeForSlot", int.class);
                         Object imei = method.invoke(mTelephony, slotId);
                         otherInfo.addProperty("zdx.tm.CURRENT_PHONE_TYPE_FOR_SLOT" + slotId, imei.toString());
                     } catch (Exception e) {
@@ -632,7 +632,7 @@ public class Hardware {
                 otherInfo.addProperty("zdx.loc.LONG", nullStr);
             }
 
-            BluetoothAdapter bluetoothAdapter = android.bluetooth.BluetoothAdapter.getDefaultAdapter();
+            BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             if (bluetoothAdapter != null) {
                 otherInfo.addProperty("zdx.bt.BLUETOOTH_ADDR", bluetoothAdapter.getAddress());
                 otherInfo.addProperty("zdx.bt.BLUETOOTH_NAME", bluetoothAdapter.getName());
