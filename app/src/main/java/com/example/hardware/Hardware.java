@@ -116,15 +116,15 @@ public class Hardware {
             //zdx.tm.DEVICE_ID
             try {
                 otherInfo.addProperty("zdx.tm.DEVICE_ID", mTelephony.getDeviceId());
-                for (int slotId = 0; slotId < slotCount; slotId++) {               //zdx.tm.DEVICE_ID%slotId
-                    try {
-                        otherInfo.addProperty("zdx.tm.DEVICE_ID" + slotId, mTelephony.getDeviceId(slotId));
-                    } catch (Exception e) {
-                        otherInfo.addProperty("zdx.tm.DEVICE_ID" + slotId, nullStr);
-                    }
-                }
             } catch (Exception e) {
-
+                otherInfo.addProperty("zdx.tm.DEVICE_ID", nullStr);
+            }
+            for (int slotId = 0; slotId < slotCount; slotId++) {               //zdx.tm.DEVICE_ID%slotId
+                try {
+                    otherInfo.addProperty("zdx.tm.DEVICE_ID" + slotId, mTelephony.getDeviceId(slotId));
+                } catch (Exception e) {
+                    otherInfo.addProperty("zdx.tm.DEVICE_ID" + slotId, nullStr);
+                }
             }
 
             //zdx.tm.IMEI
@@ -198,9 +198,27 @@ public class Hardware {
                 e.printStackTrace();
             }
 
+            try {
+                Method method = mTelephony.getClass().getMethod("getCurrentPhoneType");
+                Object phoneType = method.invoke(mTelephony);
+                otherInfo.addProperty("zdx.tm.CURRENT_PHONE_TYPE0", phoneType.toString());
+            } catch (Exception e) {
+                otherInfo.addProperty("zdx.tm.CURRENT_PHONE_TYPE0", nullStr);
+            }
+
+            try {
+                String subscription = mTelephony.getSubscriberId();
+                Method method = mTelephony.getClass().getMethod("getCurrentPhoneType", int.class);
+                Object phoneType = method.invoke(mTelephony, Integer.parseInt(subscription));
+                otherInfo.addProperty("zdx.tm.CURRENT_PHONE_TYPE" + subscription, phoneType.toString());
+            } catch (Exception e) {
+//                otherInfo.addProperty("zdx.tm.CURRENT_PHONE_TYPE" + 0, nullStr);
+            }
+
+
             //zdx.tm.CURRENT_PHONE_TYPE_FOR_SLOT
             try {
-                Method method = mTelephony.getClass().getMethod("getCurrentPhoneType", int.class);
+                Method method = mTelephony.getClass().getMethod("getCurrentPhoneTypeForSlot", int.class);
                 for (int slotId = 0; slotId < slotCount; slotId++) {
                     try {
                         Object imei = method.invoke(mTelephony, slotId);
@@ -223,8 +241,14 @@ public class Hardware {
                 List<SubscriptionInfo> mSubInfoList = mSubscriptionManager.getActiveSubscriptionInfoList();
                 for (SubscriptionInfo info : mSubInfoList) {
                     Log.i("log", info.toString());
-                    otherInfo.addProperty("zdx.tm.NETWORK_OPERATOR_NAME" + info.getSimSlotIndex(), info.getDisplayName().toString());
-                    otherInfo.addProperty("zdx.tm.SIM_COUNTRY_ISO_FOR_PHONE" + info.getSimSlotIndex(), info.getCountryIso());
+                    try {
+                        otherInfo.addProperty("zdx.tm.NETWORK_OPERATOR_NAME" + info.getSimSlotIndex(), info.getDisplayName().toString());
+                        otherInfo.addProperty("zdx.tm.SIM_COUNTRY_ISO_FOR_PHONE" + info.getSimSlotIndex(), info.getCountryIso());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        otherInfo.addProperty("zdx.tm.NETWORK_OPERATOR_NAME" + info.getSimSlotIndex(), nullStr);
+                        otherInfo.addProperty("zdx.tm.SIM_COUNTRY_ISO_FOR_PHONE" + info.getSimSlotIndex(), nullStr);
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
