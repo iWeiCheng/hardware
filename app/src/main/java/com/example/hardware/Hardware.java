@@ -59,6 +59,7 @@ import static android.content.Context.TELEPHONY_SERVICE;
 
 
 public class Hardware {
+    static String nullStr = null;
 
     //获取本机硬件信息
     @SuppressLint("NewApi")
@@ -116,7 +117,7 @@ public class Hardware {
                     try {
                         otherInfo.addProperty("zdx.tm.DEVICE_ID" + slotId, mTelephony.getDeviceId(slotId));
                     } catch (Exception e) {
-                        otherInfo.addProperty("zdx.tm.DEVICE_ID" + slotId, "null");
+                        otherInfo.addProperty("zdx.tm.DEVICE_ID" + slotId, nullStr);
                     }
                 }
             } catch (Exception e) {
@@ -131,7 +132,7 @@ public class Hardware {
                         String imei = (String) method.invoke(mTelephony, slotId);
                         otherInfo.addProperty("zdx.tm.IMEI" + slotId, imei);
                     } catch (Exception e) {
-                        otherInfo.addProperty("zdx.tm.IMEI" + slotId, "null");
+                        otherInfo.addProperty("zdx.tm.IMEI" + slotId, nullStr);
                     }
 
                 }
@@ -146,7 +147,7 @@ public class Hardware {
                         String SoftwareVersion = (String) method.invoke(mTelephony, slotId);
                         otherInfo.addProperty("zdx.tm.DEVICE_SOFT_VER" + slotId, SoftwareVersion);
                     } catch (Exception e) {
-                        otherInfo.addProperty("zdx.tm.DEVICE_SOFT_VER" + slotId, "null");
+                        otherInfo.addProperty("zdx.tm.DEVICE_SOFT_VER" + slotId, nullStr);
                     }
 
                 }
@@ -164,7 +165,7 @@ public class Hardware {
                         String nai = (String) method.invoke(mTelephony, slotId);
                         otherInfo.addProperty("zdx.tm.NAI" + slotId, nai);
                     } catch (Exception e) {
-                        otherInfo.addProperty("zdx.tm.NAI" + slotId, "null");
+                        otherInfo.addProperty("zdx.tm.NAI" + slotId, nullStr);
                     }
 
                 }
@@ -202,7 +203,7 @@ public class Hardware {
                         Object imei = method.invoke(mTelephony, slotId);
                         otherInfo.addProperty("zdx.tm.CURRENT_PHONE_TYPE_FOR_SLOT" + slotId, imei.toString());
                     } catch (Exception e) {
-                        otherInfo.addProperty("zdx.tm.CURRENT_PHONE_TYPE_FOR_SLOT" + slotId, "null");
+                        otherInfo.addProperty("zdx.tm.CURRENT_PHONE_TYPE_FOR_SLOT" + slotId, nullStr);
                     }
 
                 }
@@ -246,7 +247,7 @@ public class Hardware {
                 otherInfo.addProperty("zdx.tm.NETWORK_TYPE_NAME", resutl);
             } catch (Exception e) {
                 e.printStackTrace();
-                otherInfo.addProperty("zdx.tm.NETWORK_TYPE_NAME", "null");
+                otherInfo.addProperty("zdx.tm.NETWORK_TYPE_NAME", nullStr);
 
             }
 
@@ -259,7 +260,7 @@ public class Hardware {
                         otherInfo.addProperty("zdx.tm.SIM_STATE" + slotId, mTelephony.getSimState());
 
                     } catch (Exception e) {
-                        otherInfo.addProperty("zdx.tm.SIM_STATE" + slotId, "null");
+                        otherInfo.addProperty("zdx.tm.SIM_STATE" + slotId, nullStr);
                     }
                 }
             } catch (Exception e) {
@@ -276,7 +277,7 @@ public class Hardware {
                 otherInfo.addProperty("zdx.tm.SIM_OPERATOR_NUMERIC0", numberic);
             } catch (Exception e) {
                 e.printStackTrace();
-                otherInfo.addProperty("zdx.tm.SIM_OPERATOR_NUMERIC0", "null");
+                otherInfo.addProperty("zdx.tm.SIM_OPERATOR_NUMERIC0", nullStr);
 
             }
 
@@ -293,7 +294,11 @@ public class Hardware {
 //            }
 
             otherInfo.addProperty("zdx.tm.SIM_COUNTRY_ISO", mTelephony.getSimCountryIso());
-            otherInfo.addProperty("zdx.tm.SimSerialNumber", mTelephony.getSimSerialNumber());
+            try {
+                otherInfo.addProperty("zdx.tm.SimSerialNumber", mTelephony.getSimSerialNumber());
+            } catch (Exception e) {
+                otherInfo.addProperty("zdx.tm.SimSerialNumber", nullStr);
+            }
 
             //zdx.tm.LTE_ON_CDMA_MODE
             try {
@@ -303,13 +308,23 @@ public class Hardware {
                 otherInfo.addProperty("zdx.tm.LTE_ON_CDMA_MODE", numberic.toString());
             } catch (Exception e) {
                 e.printStackTrace();
-                otherInfo.addProperty("zdx.tm.LTE_ON_CDMA_MODE", "null");
-
+                otherInfo.addProperty("zdx.tm.LTE_ON_CDMA_MODE", nullStr);
             }
-
-            otherInfo.addProperty("zdx.tm.SUBSCRIBER_ID", mTelephony.getSubscriberId());
-            otherInfo.addProperty("zdx.tm.GROUP_ID_LEVEL1", mTelephony.getGroupIdLevel1());
-            otherInfo.addProperty("zdx.tm.Line1Number", mTelephony.getLine1Number());
+            try {
+                otherInfo.addProperty("zdx.tm.SUBSCRIBER_ID", mTelephony.getSubscriberId());
+            } catch (Exception e) {
+                otherInfo.addProperty("zdx.tm.SUBSCRIBER_ID", nullStr);
+            }
+            try {
+                otherInfo.addProperty("zdx.tm.GROUP_ID_LEVEL1", mTelephony.getGroupIdLevel1());
+            } catch (Exception e) {
+                otherInfo.addProperty("zdx.tm.GROUP_ID_LEVEL1", nullStr);
+            }
+            try {
+                otherInfo.addProperty("zdx.tm.Line1Number", mTelephony.getLine1Number());
+            } catch (Exception e) {
+                otherInfo.addProperty("zdx.tm.Line1Number", nullStr);
+            }
 
             ///zdx.tm.MSISDN
             try {
@@ -318,7 +333,7 @@ public class Hardware {
                 otherInfo.addProperty("zdx.tm.LINE1_ALPHA_TAG", result);
             } catch (Exception e) {
                 e.printStackTrace();
-                otherInfo.addProperty("zdx.tm.LINE1_ALPHA_TAG", "null");
+                otherInfo.addProperty("zdx.tm.LINE1_ALPHA_TAG", nullStr);
 
             }
 
@@ -328,7 +343,7 @@ public class Hardware {
                 otherInfo.addProperty("zdx.tm.MSISDN", result);
             } catch (Exception e) {
                 e.printStackTrace();
-                otherInfo.addProperty("zdx.tm.MSISDN", "null");
+                otherInfo.addProperty("zdx.tm.MSISDN", nullStr);
 
             }
 
@@ -339,7 +354,7 @@ public class Hardware {
                 otherInfo.addProperty("zdx.tm.ISIM_IMPI", result);
             } catch (Exception e) {
                 e.printStackTrace();
-                otherInfo.addProperty("zdx.tm.ISIM_IMPI", "null");
+                otherInfo.addProperty("zdx.tm.ISIM_IMPI", nullStr);
 
             }
 
@@ -350,7 +365,7 @@ public class Hardware {
                 otherInfo.addProperty("zdx.tm.ISIM_DOMAIN", result);
             } catch (Exception e) {
                 e.printStackTrace();
-                otherInfo.addProperty("zdx.tm.ISIM_DOMAIN", "null");
+                otherInfo.addProperty("zdx.tm.ISIM_DOMAIN", nullStr);
 
             }
 
@@ -361,7 +376,7 @@ public class Hardware {
                 otherInfo.addProperty("zdx.tm.SIM_COUNT", resultInt);
             } catch (Exception e) {
                 e.printStackTrace();
-                otherInfo.addProperty("zdx.tm.SIM_COUNT", "null");
+                otherInfo.addProperty("zdx.tm.SIM_COUNT", nullStr);
 
             }
 
@@ -372,7 +387,7 @@ public class Hardware {
                 otherInfo.addProperty("zdx.tm.ISIM_IST", result);
             } catch (Exception e) {
                 e.printStackTrace();
-                otherInfo.addProperty("zdx.tm.ISIM_IST", "null");
+                otherInfo.addProperty("zdx.tm.ISIM_IST", nullStr);
 
             }
             //todo  java.lang.SecurityException: getCdmaMdn
@@ -382,7 +397,7 @@ public class Hardware {
                 otherInfo.addProperty("zdx.tm.CDMA_MDN", result);
             } catch (Exception e) {
                 e.printStackTrace();
-                otherInfo.addProperty("zdx.tm.CDMA_MDN", "null");
+                otherInfo.addProperty("zdx.tm.CDMA_MDN", nullStr);
 
             }
 
@@ -489,7 +504,7 @@ public class Hardware {
                 otherInfo.addProperty("zdx.tm.HAS_ICCCARD" + slotIndex, hasIccCard);
             } catch (Exception e) {
                 e.printStackTrace();
-                otherInfo.addProperty("zdx.tm.HAS_ICCCARD%slotIndex", "null");
+                otherInfo.addProperty("zdx.tm.HAS_ICCCARD%slotIndex", nullStr);
 
             }
 
@@ -537,13 +552,13 @@ public class Hardware {
                 otherInfo.addProperty("zdx.tm.MAX_SIZE_DIM", result);
             } catch (Exception e) {
                 e.printStackTrace();
-                otherInfo.addProperty("zdx.tm.MAX_SIZE_DIM", "null");
+                otherInfo.addProperty("zdx.tm.MAX_SIZE_DIM", nullStr);
 
             }
             otherInfo.addProperty("zdx.dis.NAME", Display.getName());
 
             /// todo  这里引起崩溃  废除
-            otherInfo.addProperty("zdx.dis.ID", "null");
+            otherInfo.addProperty("zdx.dis.ID", nullStr);
             otherInfo.addProperty("zdx.set.ANDROID_ID", Settings.System.getString(context.getContentResolver(), Settings.System.ANDROID_ID));
             otherInfo.addProperty("zds.java.vm.version", System.getProperty("java.vm.version"));
             otherInfo.addProperty("zds.http.agent", System.getProperty("http.agent"));
@@ -562,7 +577,7 @@ public class Hardware {
             try {
                 otherInfo.addProperty("zdx.web.UA", new WebView(context).getSettings().getUserAgentString());
             } catch (Exception e) {
-                otherInfo.addProperty("zdx.web.UA", "null");
+                otherInfo.addProperty("zdx.web.UA", nullStr);
             }
 
             try {
@@ -582,13 +597,13 @@ public class Hardware {
                     otherInfo.addProperty("zdx.loc.LONG", location.getLongitude());
                     Toast.makeText(context, location.getAltitude() + "===", Toast.LENGTH_LONG).show();
                 } else {
-                    otherInfo.addProperty("zdx.loc.LAT", "null");
-                    otherInfo.addProperty("zdx.loc.LONG", "null");
+                    otherInfo.addProperty("zdx.loc.LAT", nullStr);
+                    otherInfo.addProperty("zdx.loc.LONG", nullStr);
                 }
 
             } catch (Exception e) {
-                otherInfo.addProperty("zdx.loc.LAT", "null");
-                otherInfo.addProperty("zdx.loc.LONG", "null");
+                otherInfo.addProperty("zdx.loc.LAT", nullStr);
+                otherInfo.addProperty("zdx.loc.LONG", nullStr);
             }
 
             BluetoothAdapter bluetoothAdapter = android.bluetooth.BluetoothAdapter.getDefaultAdapter();
@@ -623,14 +638,14 @@ public class Hardware {
                     otherInfo.addProperty("zdx.sensor.MAX_DEALY9", gSensor.getMaxDelay());
                     otherInfo.addProperty("zdx.sensor.MIN_DELAY9", gSensor.getMinDelay());
                 } else {
-                    otherInfo.addProperty("zdx.sensor.VENDOR9", "null");
-                    otherInfo.addProperty("zdx.sensor.VERSION9", "null");
-                    otherInfo.addProperty("zdx.sensor.TYPE9", "null");
-                    otherInfo.addProperty("zdx.sensor.MAX_RANGE9", "null");
-                    otherInfo.addProperty("zdx.sensor.RESOLUTION9", "null");
-                    otherInfo.addProperty("zdx.sensor.POWER9", "null");
-                    otherInfo.addProperty("zdx.sensor.MAX_DEALY9", "null");
-                    otherInfo.addProperty("zdx.sensor.MIN_DELAY9", "null");
+                    otherInfo.addProperty("zdx.sensor.VENDOR9", nullStr);
+                    otherInfo.addProperty("zdx.sensor.VERSION9", nullStr);
+                    otherInfo.addProperty("zdx.sensor.TYPE9", nullStr);
+                    otherInfo.addProperty("zdx.sensor.MAX_RANGE9", nullStr);
+                    otherInfo.addProperty("zdx.sensor.RESOLUTION9", nullStr);
+                    otherInfo.addProperty("zdx.sensor.POWER9", nullStr);
+                    otherInfo.addProperty("zdx.sensor.MAX_DEALY9", nullStr);
+                    otherInfo.addProperty("zdx.sensor.MIN_DELAY9", nullStr);
                 }
 
                 Sensor mSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -645,14 +660,14 @@ public class Hardware {
                     otherInfo.addProperty("zdx.sensor.MAX_DEALY1", mSensor.getMaxDelay());
                     otherInfo.addProperty("zdx.sensor.MIN_DELAY1", mSensor.getMinDelay());
                 } else {
-                    otherInfo.addProperty("zdx.sensor.VENDOR1", "null");
-                    otherInfo.addProperty("zdx.sensor.VERSION1", "null");
-                    otherInfo.addProperty("zdx.sensor.TYPE1", "null");
-                    otherInfo.addProperty("zdx.sensor.MAX_RANGE1", "null");
-                    otherInfo.addProperty("zdx.sensor.RESOLUTION1", "null");
-                    otherInfo.addProperty("zdx.sensor.POWER1", "null");
-                    otherInfo.addProperty("zdx.sensor.MAX_DEALY1", "null");
-                    otherInfo.addProperty("zdx.sensor.MIN_DELAY1", "null");
+                    otherInfo.addProperty("zdx.sensor.VENDOR1", nullStr);
+                    otherInfo.addProperty("zdx.sensor.VERSION1", nullStr);
+                    otherInfo.addProperty("zdx.sensor.TYPE1", nullStr);
+                    otherInfo.addProperty("zdx.sensor.MAX_RANGE1", nullStr);
+                    otherInfo.addProperty("zdx.sensor.RESOLUTION1", nullStr);
+                    otherInfo.addProperty("zdx.sensor.POWER1", nullStr);
+                    otherInfo.addProperty("zdx.sensor.MAX_DEALY1", nullStr);
+                    otherInfo.addProperty("zdx.sensor.MIN_DELAY1", nullStr);
                 }
 
 
@@ -669,14 +684,14 @@ public class Hardware {
                     otherInfo.addProperty("zdx.sensor.MAX_DEALY3", oSensor.getMaxDelay());
                     otherInfo.addProperty("zdx.sensor.MIN_DELAY3", oSensor.getMinDelay());
                 } else {
-                    otherInfo.addProperty("zdx.sensor.VENDOR3", "null");
-                    otherInfo.addProperty("zdx.sensor.VERSION3", "null");
-                    otherInfo.addProperty("zdx.sensor.TYPE3", "null");
-                    otherInfo.addProperty("zdx.sensor.MAX_RANGE3", "null");
-                    otherInfo.addProperty("zdx.sensor.RESOLUTION3", "null");
-                    otherInfo.addProperty("zdx.sensor.POWER3", "null");
-                    otherInfo.addProperty("zdx.sensor.MAX_DEALY3", "null");
-                    otherInfo.addProperty("zdx.sensor.MIN_DELAY3", "null");
+                    otherInfo.addProperty("zdx.sensor.VENDOR3", nullStr);
+                    otherInfo.addProperty("zdx.sensor.VERSION3", nullStr);
+                    otherInfo.addProperty("zdx.sensor.TYPE3", nullStr);
+                    otherInfo.addProperty("zdx.sensor.MAX_RANGE3", nullStr);
+                    otherInfo.addProperty("zdx.sensor.RESOLUTION3", nullStr);
+                    otherInfo.addProperty("zdx.sensor.POWER3", nullStr);
+                    otherInfo.addProperty("zdx.sensor.MAX_DEALY3", nullStr);
+                    otherInfo.addProperty("zdx.sensor.MIN_DELAY3", nullStr);
                 }
 
                 Sensor gySensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
@@ -691,49 +706,49 @@ public class Hardware {
                     otherInfo.addProperty("zdx.sensor.MAX_DEALY4", gySensor.getMaxDelay());
                     otherInfo.addProperty("zdx.sensor.MIN_DELAY4", gySensor.getMinDelay());
                 } else {
-                    otherInfo.addProperty("zdx.sensor.VENDOR4", "null");
-                    otherInfo.addProperty("zdx.sensor.VERSION4", "null");
-                    otherInfo.addProperty("zdx.sensor.TYPE4", "null");
-                    otherInfo.addProperty("zdx.sensor.MAX_RANGE4", "null");
-                    otherInfo.addProperty("zdx.sensor.RESOLUTION4", "null");
-                    otherInfo.addProperty("zdx.sensor.POWER4", "null");
-                    otherInfo.addProperty("zdx.sensor.MAX_DEALY4", "null");
-                    otherInfo.addProperty("zdx.sensor.MIN_DELAY4", "null");
+                    otherInfo.addProperty("zdx.sensor.VENDOR4", nullStr);
+                    otherInfo.addProperty("zdx.sensor.VERSION4", nullStr);
+                    otherInfo.addProperty("zdx.sensor.TYPE4", nullStr);
+                    otherInfo.addProperty("zdx.sensor.MAX_RANGE4", nullStr);
+                    otherInfo.addProperty("zdx.sensor.RESOLUTION4", nullStr);
+                    otherInfo.addProperty("zdx.sensor.POWER4", nullStr);
+                    otherInfo.addProperty("zdx.sensor.MAX_DEALY4", nullStr);
+                    otherInfo.addProperty("zdx.sensor.MIN_DELAY4", nullStr);
                 }
 
             } catch (Exception e) {
-                otherInfo.addProperty("zdx.sensor.VENDOR9", "null");
-                otherInfo.addProperty("zdx.sensor.VERSION9", "null");
-                otherInfo.addProperty("zdx.sensor.TYPE9", "null");
-                otherInfo.addProperty("zdx.sensor.MAX_RANGE9", "null");
-                otherInfo.addProperty("zdx.sensor.RESOLUTION9", "null");
-                otherInfo.addProperty("zdx.sensor.POWER9", "null");
-                otherInfo.addProperty("zdx.sensor.MAX_DEALY9", "null");
-                otherInfo.addProperty("zdx.sensor.MIN_DELAY9", "null");
-                otherInfo.addProperty("zdx.sensor.VENDOR1", "null");
-                otherInfo.addProperty("zdx.sensor.VERSION1", "null");
-                otherInfo.addProperty("zdx.sensor.TYPE1", "null");
-                otherInfo.addProperty("zdx.sensor.MAX_RANGE1", "null");
-                otherInfo.addProperty("zdx.sensor.RESOLUTION1", "null");
-                otherInfo.addProperty("zdx.sensor.POWER1", "null");
-                otherInfo.addProperty("zdx.sensor.MAX_DEALY1", "null");
-                otherInfo.addProperty("zdx.sensor.MIN_DELAY1", "null");
-                otherInfo.addProperty("zdx.sensor.VENDOR3", "null");
-                otherInfo.addProperty("zdx.sensor.VERSION3", "null");
-                otherInfo.addProperty("zdx.sensor.TYPE3", "null");
-                otherInfo.addProperty("zdx.sensor.MAX_RANGE3", "null");
-                otherInfo.addProperty("zdx.sensor.RESOLUTION3", "null");
-                otherInfo.addProperty("zdx.sensor.POWER3", "null");
-                otherInfo.addProperty("zdx.sensor.MAX_DEALY3", "null");
-                otherInfo.addProperty("zdx.sensor.MIN_DELAY3", "null");
-                otherInfo.addProperty("zdx.sensor.VENDOR4", "null");
-                otherInfo.addProperty("zdx.sensor.VERSION4", "null");
-                otherInfo.addProperty("zdx.sensor.TYPE4", "null");
-                otherInfo.addProperty("zdx.sensor.MAX_RANGE4", "null");
-                otherInfo.addProperty("zdx.sensor.RESOLUTION4", "null");
-                otherInfo.addProperty("zdx.sensor.POWER4", "null");
-                otherInfo.addProperty("zdx.sensor.MAX_DEALY4", "null");
-                otherInfo.addProperty("zdx.sensor.MIN_DELAY4", "null");
+                otherInfo.addProperty("zdx.sensor.VENDOR9", nullStr);
+                otherInfo.addProperty("zdx.sensor.VERSION9", nullStr);
+                otherInfo.addProperty("zdx.sensor.TYPE9", nullStr);
+                otherInfo.addProperty("zdx.sensor.MAX_RANGE9", nullStr);
+                otherInfo.addProperty("zdx.sensor.RESOLUTION9", nullStr);
+                otherInfo.addProperty("zdx.sensor.POWER9", nullStr);
+                otherInfo.addProperty("zdx.sensor.MAX_DEALY9", nullStr);
+                otherInfo.addProperty("zdx.sensor.MIN_DELAY9", nullStr);
+                otherInfo.addProperty("zdx.sensor.VENDOR1", nullStr);
+                otherInfo.addProperty("zdx.sensor.VERSION1", nullStr);
+                otherInfo.addProperty("zdx.sensor.TYPE1", nullStr);
+                otherInfo.addProperty("zdx.sensor.MAX_RANGE1", nullStr);
+                otherInfo.addProperty("zdx.sensor.RESOLUTION1", nullStr);
+                otherInfo.addProperty("zdx.sensor.POWER1", nullStr);
+                otherInfo.addProperty("zdx.sensor.MAX_DEALY1", nullStr);
+                otherInfo.addProperty("zdx.sensor.MIN_DELAY1", nullStr);
+                otherInfo.addProperty("zdx.sensor.VENDOR3", nullStr);
+                otherInfo.addProperty("zdx.sensor.VERSION3", nullStr);
+                otherInfo.addProperty("zdx.sensor.TYPE3", nullStr);
+                otherInfo.addProperty("zdx.sensor.MAX_RANGE3", nullStr);
+                otherInfo.addProperty("zdx.sensor.RESOLUTION3", nullStr);
+                otherInfo.addProperty("zdx.sensor.POWER3", nullStr);
+                otherInfo.addProperty("zdx.sensor.MAX_DEALY3", nullStr);
+                otherInfo.addProperty("zdx.sensor.MIN_DELAY3", nullStr);
+                otherInfo.addProperty("zdx.sensor.VENDOR4", nullStr);
+                otherInfo.addProperty("zdx.sensor.VERSION4", nullStr);
+                otherInfo.addProperty("zdx.sensor.TYPE4", nullStr);
+                otherInfo.addProperty("zdx.sensor.MAX_RANGE4", nullStr);
+                otherInfo.addProperty("zdx.sensor.RESOLUTION4", nullStr);
+                otherInfo.addProperty("zdx.sensor.POWER4", nullStr);
+                otherInfo.addProperty("zdx.sensor.MAX_DEALY4", nullStr);
+                otherInfo.addProperty("zdx.sensor.MIN_DELAY4", nullStr);
             }
 
             try {
@@ -741,7 +756,7 @@ public class Hardware {
                 otherInfo.addProperty("zdx.signal.IS_GSM", mTelephony.getSignalStrength().isGsm());
             } catch (Exception e) {
                 e.printStackTrace();
-                otherInfo.addProperty("zdx.signal.IS_GSM", "null");
+                otherInfo.addProperty("zdx.signal.IS_GSM", nullStr);
             }
             //todo 这4个无法获取到boolean的值
             otherInfo.addProperty("zdx.signal.FAKE_ENABLE", true);
