@@ -7,6 +7,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     public final static int REQUEST_READ_PHONE_STATE = 1;
     String imeiString = "";
     String uuId = "";
+    String hardwareString = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +105,9 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             WebApiCall webApiCall = new WebApiCall(WebApiCall.SubmitHardwareInfo, hardwareRoot, requestHandler, phoneNum);
             Thread thread = new Thread(webApiCall);
             thread.start();
+            if (hardwareRoot != null) {
+                hardwareString = hardwareRoot.toString();
+            }
             Log.i("Submit:", hardwareRoot.toString());
 //            tvHardware.setText(hardwareRoot.toString());
         }
@@ -133,13 +138,25 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                     Log.i("handleMessage", "handleMessage: " + txtMsg);
                     tvSuccess.setVisibility(View.VISIBLE);
                     tvDeny.setVisibility(View.GONE);
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            finish();
-                            System.exit(0);
-                        }
-                    }, 5000);
+                    AndPermission.with(MainActivity.this)
+                            .runtime()
+                            .permission(Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE)
+                            .onGranted(permissions -> {
+                                boolean isSuccess = FileUtils.WriteStringToFile(hardwareString, Environment.getExternalStorageDirectory() + "/hardwareInfo.txt");
+                                if (isSuccess) {
+                                    new Handler().postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            finish();
+                                            System.exit(0);
+                                        }
+                                    }, 5000);
+                                }
+                            })
+                            .onDenied(permissions -> {
+                                Toast.makeText(getApplicationContext(), "请给予任务存储权限", Toast.LENGTH_SHORT).show();
+                            })
+                            .start();
                     break;
                 }
                 case WebApiCall.REQUEST_FAIL:
