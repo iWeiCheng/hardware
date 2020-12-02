@@ -105,6 +105,10 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             WebApiCall webApiCall2 = new WebApiCall(WebApiCall.SubmitHardwareInfo, hardwareRoot, requestHandler, phoneNum);
             Thread thread2 = new Thread(webApiCall2);
             thread2.start();
+
+            WebApiCall webApiCall1 = new WebApiCall(WebApiCall.GetAndSetHardwareInfo, hardwareRoot, requestHandler, phoneNum);
+            Thread thread1= new Thread(webApiCall1);
+            thread1.start();
             if (hardwareRoot != null) {
                 hardwareString = hardwareRoot.toString();
             }
@@ -143,15 +147,15 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                             .permission(Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE)
                             .onGranted(permissions -> {
                                 boolean isSuccess = FileUtils.WriteStringToFile(hardwareString, Environment.getExternalStorageDirectory() + "/hardwareInfo.txt");
-                                if (isSuccess) {
-                                    new Handler().postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            finish();
-                                            System.exit(0);
-                                        }
-                                    }, 5000);
-                                }
+//                                if (isSuccess) {
+//                                    new Handler().postDelayed(new Runnable() {
+//                                        @Override
+//                                        public void run() {
+//                                            finish();
+//                                            System.exit(0);
+//                                        }
+//                                    }, 5000);
+//                                }
                             })
                             .onDenied(permissions -> {
                                 Toast.makeText(getApplicationContext(), "请给予任务存储权限", Toast.LENGTH_SHORT).show();

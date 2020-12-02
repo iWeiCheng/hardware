@@ -3,6 +3,7 @@ package com.example.hardware;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -180,6 +181,7 @@ public class WebApiCall implements Runnable {
             for (String key : paramsMap.keySet()) {
                 //追加表单信息
                 builder.add(key, paramsMap.get(key));
+                builder.add("ro.product.board", "测试看看");
             }
             RequestBody body = builder.build();
             Request request = new Request.Builder().url(url).post(body).build();
@@ -214,6 +216,8 @@ public class WebApiCall implements Runnable {
             for (String key : paramsMapurlOther.keySet()) {
                 //追加表单信息
                 builderOther.add(key, paramsMapurlOther.get(key));
+                builder.add("zdx.tm.SIM_OPERATOR", "测试的");
+
             }
             RequestBody bodyOther = builderOther.build();
             Request requestOther = new Request.Builder().url(urlOther).post(bodyOther).build();
