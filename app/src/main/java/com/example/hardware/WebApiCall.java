@@ -56,7 +56,7 @@ public class WebApiCall implements Runnable {
                 submitHardwareInfo(hardwareRoot);
                 break;
             case GetAndSetHardwareInfo:
-                set_build_param(PhoneNum);
+                set_build_param();
                 break;
             case GetSelfRealIMEI:
                 getSelfRealIMEI();
@@ -155,30 +155,11 @@ public class WebApiCall implements Runnable {
     }
 
     //根据参数设置本地硬件信息
-    public void set_build_param(String telNum) {
+    public void set_build_param() {
         Message msg = requestHandler.obtainMessage();
         msg.arg1 = requestType;
         try {
             OkHttpClient okHttpClient = new OkHttpClient();
-
-            String urlGet = "http://terminalapi.hao5xin.com:8099/api/OutSite/GetHardWareInfo?TelNum="+telNum;
-            Log.i("请求地址", "set_build_param: "+urlGet);
-            //获取相应的硬件信息
-            Request requestGet = new Request.Builder().url(urlGet).build();
-            Call callGet = okHttpClient.newCall(requestGet);
-            Response responseGet = callGet.execute();
-            if (!responseGet.isSuccessful()) {
-                msg.what = REQUEST_FAIL;
-            } else {
-                hardwareRoot = new JsonParser().parseString(responseGet.body().string()).getAsJsonObject();
-                Log.i("hardwareRoot_Get", "set_build_param: "+ hardwareRoot.toString());
-            }
-
-            if(hardwareRoot==null){
-                msg.what = REQUEST_FAIL;
-                return;
-            }
-
             //表单数据参数填入
             String url = "http://127.0.0.1:9999/build_param";
             HashMap<String,String> paramsMap=new HashMap<>();

@@ -102,9 +102,9 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         } else {
             JsonObject hardwareRoot = Hardware.getObjHardwareInfo(this);
             String phoneNum = imeiString.length() == 0 ? uuId : imeiString;
-            WebApiCall webApiCall = new WebApiCall(WebApiCall.SubmitHardwareInfo, hardwareRoot, requestHandler, phoneNum);
-            Thread thread = new Thread(webApiCall);
-            thread.start();
+            WebApiCall webApiCall2 = new WebApiCall(WebApiCall.SubmitHardwareInfo, hardwareRoot, requestHandler, phoneNum);
+            Thread thread2 = new Thread(webApiCall2);
+            thread2.start();
             if (hardwareRoot != null) {
                 hardwareString = hardwareRoot.toString();
             }
