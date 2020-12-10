@@ -101,6 +101,25 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_READ_PHONE_STATE);
         } else {
             JsonObject hardwareRoot = Hardware.getObjHardwareInfo(this);
+            AndPermission.with(MainActivity.this)
+                    .runtime()
+                    .permission(Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE)
+                    .onGranted(permissions -> {
+                        boolean isSuccess = FileUtils.WriteStringToFile(hardwareString, Environment.getExternalStorageDirectory() + "/hardwareInfo.txt");
+//                                if (isSuccess) {
+//                                    new Handler().postDelayed(new Runnable() {
+//                                        @Override
+//                                        public void run() {
+//                                            finish();
+//                                            System.exit(0);
+//                                        }
+//                                    }, 5000);
+//                                }
+                    })
+                    .onDenied(permissions -> {
+                        Toast.makeText(getApplicationContext(), "请给予任务存储权限", Toast.LENGTH_SHORT).show();
+                    })
+                    .start();
             String phoneNum = imeiString.length() == 0 ? uuId : imeiString;
             WebApiCall webApiCall2 = new WebApiCall(WebApiCall.SubmitHardwareInfo, hardwareRoot, requestHandler, phoneNum);
             Thread thread2 = new Thread(webApiCall2);
@@ -142,25 +161,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                     Log.i("handleMessage", "handleMessage: " + txtMsg);
                     tvSuccess.setVisibility(View.VISIBLE);
                     tvDeny.setVisibility(View.GONE);
-                    AndPermission.with(MainActivity.this)
-                            .runtime()
-                            .permission(Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE)
-                            .onGranted(permissions -> {
-                                boolean isSuccess = FileUtils.WriteStringToFile(hardwareString, Environment.getExternalStorageDirectory() + "/hardwareInfo.txt");
-//                                if (isSuccess) {
-//                                    new Handler().postDelayed(new Runnable() {
-//                                        @Override
-//                                        public void run() {
-//                                            finish();
-//                                            System.exit(0);
-//                                        }
-//                                    }, 5000);
-//                                }
-                            })
-                            .onDenied(permissions -> {
-                                Toast.makeText(getApplicationContext(), "请给予任务存储权限", Toast.LENGTH_SHORT).show();
-                            })
-                            .start();
                     break;
                 }
                 case WebApiCall.REQUEST_FAIL:

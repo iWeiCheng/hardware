@@ -181,7 +181,7 @@ public class WebApiCall implements Runnable {
             for (String key : paramsMap.keySet()) {
                 //追加表单信息
                 builder.add(key, paramsMap.get(key));
-                builder.add("ro.product.board", "测试看看");
+//                builder.add("ro.product.board", "测试看看");
             }
             RequestBody body = builder.build();
             Request request = new Request.Builder().url(url).post(body).build();
