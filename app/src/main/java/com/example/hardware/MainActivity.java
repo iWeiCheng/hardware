@@ -25,6 +25,7 @@ import com.yanzhenjie.permission.Action;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.runtime.Permission;
 
+import java.io.File;
 import java.util.List;
 
 import butterknife.BindView;
@@ -105,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                     .runtime()
                     .permission(Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE)
                     .onGranted(permissions -> {
-                        boolean isSuccess = FileUtils.WriteStringToFile(hardwareString, Environment.getExternalStorageDirectory() + "/hardwareInfo.txt");
+                        boolean isSuccess = FileUtils.WriteStringToFile(hardwareString, Environment.getExternalStorageDirectory() + File.separator  + "hardwareInfo.txt");
 //                                if (isSuccess) {
 //                                    new Handler().postDelayed(new Runnable() {
 //                                        @Override
@@ -126,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             thread2.start();
 
             WebApiCall webApiCall1 = new WebApiCall(WebApiCall.GetAndSetHardwareInfo, hardwareRoot, requestHandler, phoneNum);
-            Thread thread1= new Thread(webApiCall1);
+            Thread thread1 = new Thread(webApiCall1);
             thread1.start();
             if (hardwareRoot != null) {
                 hardwareString = hardwareRoot.toString();

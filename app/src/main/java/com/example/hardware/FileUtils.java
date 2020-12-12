@@ -1268,6 +1268,9 @@ public final class FileUtils {
 
     public static boolean WriteStringToFile(String content, String filePath) {
         try {
+
+            delete(filePath);
+
             if (createOrExistsFile(filePath)) {
                 File file = new File(filePath);
                 ByteArrayInputStream stream = new ByteArrayInputStream(content.getBytes());
@@ -1283,6 +1286,6 @@ public final class FileUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return  false;
+        return false;
     }
 }
