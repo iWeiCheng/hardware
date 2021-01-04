@@ -3,6 +3,8 @@ package com.example.hardware;
 
 import android.app.Application;
 
+import com.tencent.bugly.Bugly;
+
 public class JApplication extends Application {
 
 
@@ -19,6 +21,7 @@ public class JApplication extends Application {
         super.onCreate();
         mApplication = this;
         // 初始化mWanComponent
+        Bugly.init(getApplicationContext(), "f1b0f5f510", false);
 
     }
 

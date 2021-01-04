@@ -115,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                                             System.exit(0);
                                         }
                                     }, 5000);
+                                    Toast.makeText(JApplication.getInstance(),"文件已生成，5秒后关闭应用",Toast.LENGTH_SHORT).show();
                                 }
                     })
                     .onDenied(permissions -> {
